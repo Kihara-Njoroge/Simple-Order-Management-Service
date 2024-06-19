@@ -11,6 +11,8 @@ repos:
     rev: 23.3.0
     hooks:
       - id: black
+        additional_args: ["--line-length", "88"]
+
 
   - repo: https://github.com/PyCQA/flake8
     rev: 6.0.0
@@ -21,3 +23,11 @@ repos:
     rev: v5.10.1
     hooks:
       - id: isort
+
+  - repo: local
+    hooks:
+      - id: run-tests
+        name: Run tests
+        entry: pytest
+        language: system
+        pass_filenames: false
