@@ -1,0 +1,97 @@
+# Byte-compiled / optimized / DLL files
+__pycache__/
+*.py[cod]
+*$py.class
+
+# C extensions
+*.so
+
+# Distribution / packaging
+.Python
+env/
+venv/
+ENV/
+env.bak/
+venv.bak/
+.pytest_cache/
+.tox/
+.coverage
+.coverage.*
+.cache
+nosetests.xml
+coverage.xml
+*.cover
+.hypothesis/
+*.hypothesis
+
+# Install logs
+pip-log.txt
+pip-delete-this-directory.txt
+
+# Django stuff:
+*.log
+local_settings.py
+db.sqlite3
+
+# Sphinx documentation
+docs/_build/
+
+# Jupyter Notebook
+.ipynb_checkpoints
+
+# pyenv
+.python-version
+
+# mypy
+.mypy_cache/
+.dmypy.json
+dmypy.json
+
+# Pyre type checker
+.pyre/
+
+# VS Code
+.vscode/
+
+# JetBrains IDEs
+.idea/
+
+# Other IDEs and editors
+*.swp
+*~
+.project
+.pydevproject
+*.sublime-project
+*.sublime-workspace
+
+# OS-generated files
+.DS_Store
+Thumbs.db
+
+# Docker-specific files
+Dockerfile
+docker-compose.yml
+
+# Node.js stuff
+node_modules/
+npm-debug.log
+yarn-error.log
+yarn-debug.log
+
+# Build and artifact files
+build/
+dist/
+*.egg-info/
+.eggs/
+
+# Test and coverage reports
+htmlcov/
+.tox/
+.nox/
+
+# Git and other version control
+.git/
+.gitignore
+.hg/
+.hgignore
+.svn/
