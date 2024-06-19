@@ -10,9 +10,13 @@ def main():
     """Run administrative tasks."""
 
     if DEBUG:
-          os.environ.setdefault("DJANGO_SETTINGS_MODULE", "app.order_service.settings.local")
+        os.environ.setdefault(
+            "DJANGO_SETTINGS_MODULE", "app.order_service.settings.local"
+        )
     else:
-        os.environ.setdefault("DJANGO_SETTINGS_MODULE", "app.order_service.settings.production")
+        os.environ.setdefault(
+            "DJANGO_SETTINGS_MODULE", "app.order_service.settings.production"
+        )
 
     try:
         from django.core.management import execute_from_command_line
