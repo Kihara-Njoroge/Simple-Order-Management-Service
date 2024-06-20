@@ -10,21 +10,15 @@ services:
       - "${PORT}:${PORT}"
     env_file:
       - .env
-    depends_on:
-      - db
-  db:
-    image: postgres:15
-    volumes:
-      - postgres:/var/lib/postgresql/data/
-    env_file:
-      - .env.db
-    ports:
-      - "5433:5433"
+    environment:
+      DB_NAME: ${DB_NAME}
+      DB_PASSWORD: ${DB_PASSWORD}
+      DB_USER: ${DB_USER}
+      DB_HOST: ${DB_HOST}
+      DB_PORT: ${DB_PORT}
+    restart: on-failure
     networks:
       - order_management_network
-
-volumes:
-  postgres:
 
 networks:
   order_management_network:

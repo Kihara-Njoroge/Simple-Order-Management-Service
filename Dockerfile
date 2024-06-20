@@ -8,6 +8,13 @@ ENV PYTHONUNBUFFERED 1
 # Set working directory in the container
 WORKDIR /app
 
+# Copy the entrypoint script
+COPY entrypoint.sh .
+
+# Remove carriage returns and make the script executable
+RUN sed -i 's/\r$//g' entrypoint.sh
+RUN chmod +x entrypoint.sh
+
 # Install dependencies
 COPY requirements.txt .
 RUN pip install --no-cache-dir -r requirements.txt
@@ -15,8 +22,6 @@ RUN pip install --no-cache-dir -r requirements.txt
 # Copy the rest of the application
 COPY . .
 
-# Make entrypoint script executable (if you have one)
-RUN sed -i 's/\r$//' entrypoint.sh || true && chmod +x entrypoint.sh
-
-# Specify the command to run the application
+# Specify the entrypoint and command
+ENTRYPOINT ["/app/entrypoint.sh"]
 CMD ["python", "manage.py", "runserver", "0.0.0.0:8000"]
