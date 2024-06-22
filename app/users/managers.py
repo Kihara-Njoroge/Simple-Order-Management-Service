@@ -75,7 +75,7 @@ class CustomUserManager(BaseUserManager):
             email = self.normalize_email(email)
             self.email_validator(email)
         else:
-            raise ValueError(_("an email address is required for admin account"))
+            raise ValueError(_("Email is required for admin account."))
 
         user = self.create_user(
             username,

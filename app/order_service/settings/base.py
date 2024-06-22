@@ -8,7 +8,6 @@ BASE_DIR = Path(__file__).resolve().parent.parent
 DEBUG = config("DEBUG") == "True"
 SECRET_KEY = config("SECRET_KEY")
 
-# Application definition
 INSTALLED_APPS = [
     "django.contrib.admin",
     "django.contrib.auth",
@@ -51,10 +50,6 @@ TEMPLATES = [
 
 WSGI_APPLICATION = "app.order_service.wsgi.application"
 
-
-# Password validation
-# https://docs.djangoproject.com/en/5.0/ref/settings/#auth-password-validators
-
 AUTH_PASSWORD_VALIDATORS = [
     {
         "NAME": "django.contrib.auth.password_validation.UserAttributeSimilarityValidator",
@@ -71,9 +66,6 @@ AUTH_PASSWORD_VALIDATORS = [
 ]
 
 
-# Internationalization
-# https://docs.djangoproject.com/en/5.0/topics/i18n/
-
 LANGUAGE_CODE = "en-us"
 
 TIME_ZONE = "UTC"
@@ -83,13 +75,8 @@ USE_I18N = True
 USE_TZ = True
 
 
-# Static files (CSS, JavaScript, Images)
-# https://docs.djangoproject.com/en/5.0/howto/static-files/
-
 STATIC_URL = "static/"
 
-# Default primary key field type
-# https://docs.djangoproject.com/en/5.0/ref/settings/#default-auto-field
 
 DEFAULT_AUTO_FIELD = "django.db.models.BigAutoField"
 
@@ -100,3 +87,6 @@ REST_FRAMEWORK = {
 
 SPECTACULAR_SETTINGS = {"TITLE": "Order System API", "VALID_LANGUAGES": ["en"]}
 SPECTACULAR_AUTO_SCHEMA = True
+
+
+AUTH_USER_MODEL = "users.User"
