@@ -1,0 +1,19 @@
+<!doctype html>
+<html lang="en-US">
+<head>
+    <title>OAuth 2.0 Callback</title>
+</head>
+<body>
+    <script>
+    window.opener.postMessage(
+        {
+            type: 'oauth-callback',
+            code: new URL(window.location).searchParams.get('code'),
+            state: new URL(window.location).searchParams.get('state')
+        },
+        window.opener.origin
+    );
+    window.close();
+    </script>
+</body>
+</html>
