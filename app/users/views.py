@@ -87,7 +87,9 @@ class UserViewSet(viewsets.ViewSet):
             )
 
         user.delete()
-        return Response({"message": "User deleted successfully."})
+        return Response(
+            {"message": "User deleted successfully."}, status=status.HTTP_204_NO_CONTENT
+        )
 
 
 class LoginView(APIView):

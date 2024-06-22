@@ -33,16 +33,16 @@ class UserSerializer(serializers.ModelSerializer):
     def get_full_name(self, obj):
         return f"{obj.first_name.title()} {obj.last_name.title()}"
 
-    # lets you put a value to the serializer
-    # add admin=true to a superuser
     def to_representation(self, instance):
-        representation = super(UserSerializer, self).to_representation(instance)
+        representation = super().to_representation(instance)
         if instance.is_superuser:
             representation["admin"] = True
         return representation
 
 
 class CreateUserSerializer(UserCreateSerializer):
+    password = serializers.CharField(write_only=True)
+
     class Meta(UserCreateSerializer.Meta):
         model = User
         fields = [
@@ -57,6 +57,8 @@ class CreateUserSerializer(UserCreateSerializer):
 
 
 class UpdateUserSerializer(serializers.ModelSerializer):
+    phone_number = PhoneNumberField()
+
     class Meta:
         model = User
         fields = ["first_name", "last_name", "phone_number"]
