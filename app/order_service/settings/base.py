@@ -107,21 +107,15 @@ SPECTACULAR_AUTO_SCHEMA = True
 AUTH_USER_MODEL = "users.User"
 
 
-OIDC_RP_CLIENT_ID = (
-    "698729611020-57975k1mth069l7ms5fu5c5cverg2i49.apps.googleusercontent.com"
-)
-OIDC_RP_CLIENT_SECRET = "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"
-
-OIDC_OP_AUTHORIZATION_ENDPOINT = "https://accounts.google.com/o/oauth2/v2/auth"
-OIDC_OP_TOKEN_ENDPOINT = "https://oauth2.googleapis.com/token"
-OIDC_OP_USER_ENDPOINT = "https://openidconnect.googleapis.com/v1/userinfo"
-OIDC_OP_JWKS_ENDPOINT = "https://www.googleapis.com/oauth2/v3/certs"
-OIDC_RP_SIGN_ALGO = "RS256"
-OIDC_RP_SCOPES = "openid email profile"
-OIDC_OP_DISCOVERY_ENDPOINT = (
-    "https://accounts.google.com/.well-known/openid-configuration"
-)
-OIDC_RP_SIGN_ALGO = "RS256"
+OIDC_RP_CLIENT_ID = config("OIDC_RP_CLIENT_ID")
+OIDC_RP_CLIENT_SECRET = config("OIDC_RP_CLIENT_SECRET")
+OIDC_OP_AUTHORIZATION_ENDPOINT = config("OIDC_OP_AUTHORIZATION_ENDPOINT")
+OIDC_OP_TOKEN_ENDPOINT = config("OIDC_OP_TOKEN_ENDPOINT")
+OIDC_OP_USER_ENDPOINT = config("OIDC_OP_USER_ENDPOINT")
+OIDC_OP_JWKS_ENDPOINT = config("OIDC_OP_JWKS_ENDPOINT")
+OIDC_RP_SIGN_ALGO = config("OIDC_RP_SIGN_ALGO")
+OIDC_RP_SCOPES = config("OIDC_RP_SCOPES")
+OIDC_OP_DISCOVERY_ENDPOINT = config("OIDC_OP_DISCOVERY_ENDPOINT")
 
 SITE_ID = 2
 LOGIN_REDIRECT_URL = "/api/v1/auth/callback/"
@@ -141,8 +135,8 @@ SPECTACULAR_SETTINGS = {
                 "type": "oauth2",
                 "flows": {
                     "authorizationCode": {
-                        "authorizationUrl": OIDC_OP_AUTHORIZATION_ENDPOINT,
-                        "tokenUrl": OIDC_OP_TOKEN_ENDPOINT,
+                        "authorizationUrl": config("OIDC_OP_AUTHORIZATION_ENDPOINT"),
+                        "tokenUrl": config("OIDC_OP_TOKEN_ENDPOINT"),
                         "scopes": {
                             "openid": "OpenID Connect scope",
                             "email": "Email scope",
@@ -150,8 +144,8 @@ SPECTACULAR_SETTINGS = {
                         },
                     }
                 },
-                "x-client-id": OIDC_RP_CLIENT_ID,
-                "x-client-secret": OIDC_RP_CLIENT_SECRET,
+                "x-client-id": config("OIDC_RP_CLIENT_ID"),
+                "x-client-secret": config("OIDC_RP_CLIENT_SECRET"),
             }
         }
     },
