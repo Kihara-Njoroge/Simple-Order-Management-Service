@@ -21,7 +21,7 @@ class User(AbstractBaseUser, PermissionsMixin):
     first_name = models.CharField(verbose_name=_("First Name"), max_length=255)
     last_name = models.CharField(verbose_name=_("Last Name"), max_length=255)
     phone_number = PhoneNumberField(
-        verbose_name=_("Phone number"), max_length=30, default="+254798556797"
+        verbose_name=_("Phone number"), max_length=30, unique=True
     )
     email = models.EmailField(verbose_name=_("Email Address"), unique=True)
     is_staff = models.BooleanField(default=False)
@@ -33,7 +33,7 @@ class User(AbstractBaseUser, PermissionsMixin):
     )
 
     USERNAME_FIELD = "email"
-    REQUIRED_FIELDS = ["username", "first_name", "last_name"]
+    REQUIRED_FIELDS = ["username", "first_name", "last_name", "email", "phone_number"]
 
     objects = CustomUserManager()
 
