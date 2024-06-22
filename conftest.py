@@ -1,8 +1,13 @@
+# fixtures
 import pytest
+from pytest_factoryboy import register
+
+from app.tests.factories import UserFactory
+
+register(UserFactory)
 
 
-@pytest.fixture(scope="session")
-def dummy_test():
-    print("Running dummy test...")
-    # Perform dummy test actions here, such as asserting trivial conditions
-    assert True
+@pytest.fixture
+def base_user(db, user_factory):
+    new_user = user_factory.create()
+    return new_user
