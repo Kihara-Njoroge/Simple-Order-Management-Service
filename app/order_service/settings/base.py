@@ -28,6 +28,7 @@ AUTHENTICATION_BACKENDS = (
     "django.contrib.auth.backends.ModelBackend",
 )
 
+
 MIDDLEWARE = [
     "django.middleware.security.SecurityMiddleware",
     "django.contrib.sessions.middleware.SessionMiddleware",
@@ -95,7 +96,6 @@ REST_FRAMEWORK = {
     "DEFAULT_SCHEMA_CLASS": "drf_spectacular.openapi.AutoSchema",
     "DEFAULT_AUTHENTICATION_CLASSES": (
         "oauth2_provider.contrib.rest_framework.OAuth2Authentication",
-        "mozilla_django_oidc.contrib.drf.OIDCAuthentication",
         "rest_framework.authentication.SessionAuthentication",
     ),
     "DEFAULT_PERMISSION_CLASSES": ("rest_framework.permissions.IsAuthenticated",),
@@ -116,9 +116,12 @@ OIDC_OP_AUTHORIZATION_ENDPOINT = "https://accounts.google.com/o/oauth2/v2/auth"
 OIDC_OP_TOKEN_ENDPOINT = "https://oauth2.googleapis.com/token"
 OIDC_OP_USER_ENDPOINT = "https://openidconnect.googleapis.com/v1/userinfo"
 OIDC_OP_JWKS_ENDPOINT = "https://www.googleapis.com/oauth2/v3/certs"
-
 OIDC_RP_SIGN_ALGO = "RS256"
 OIDC_RP_SCOPES = "openid email profile"
+OIDC_OP_DISCOVERY_ENDPOINT = (
+    "https://accounts.google.com/.well-known/openid-configuration"
+)
+OIDC_RP_SIGN_ALGO = "RS256"
 
 SITE_ID = 2
 LOGIN_REDIRECT_URL = "/api/v1/auth/callback/"
@@ -155,4 +158,9 @@ SPECTACULAR_SETTINGS = {
 }
 
 
-CORS_ALLOW_ALL_ORIGINS = True
+# Function to get username from claims
+def get_username(claims):
+    return claims.get("email", "")
+
+
+OIDC_USERNAME_ALGO = get_username

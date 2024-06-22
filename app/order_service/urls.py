@@ -21,7 +21,6 @@ base_urlpatterns = [
                     name="oauth-receiver",
                 ),
                 re_path(r"^docs/.*$", rapidoc_view, name="api-docs-catchall"),
-                path("auth/", include("drf_social_oauth2.urls", namespace="drf")),
                 path("", include("app.users.urls")),
             ]
         ),
