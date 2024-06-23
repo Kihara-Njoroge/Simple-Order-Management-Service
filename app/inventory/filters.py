@@ -1,28 +1,21 @@
 from django_filters import rest_framework as filters
+
 from .models import Product
 
 
 class ProductFilter(filters.FilterSet):
     product_name = filters.CharFilter(
         field_name="name",
-        lookup_expr="icontains",  # Case-insensitive partial match
+        lookup_expr="icontains",
     )
     category_name = filters.CharFilter(
         field_name="category__name",
-        lookup_expr="icontains",  # Case-insensitive partial match
+        lookup_expr="icontains",
     )
-    min_price = filters.NumberFilter(
-        field_name="price", lookup_expr="gte"  # Greater than or equal to
-    )
-    max_price = filters.NumberFilter(
-        field_name="price", lookup_expr="lte"  # Less than or equal to
-    )
-    min_stock = filters.NumberFilter(
-        field_name="stock", lookup_expr="gte"  # Greater than or equal to
-    )
-    max_stock = filters.NumberFilter(
-        field_name="stock", lookup_expr="lte"  # Less than or equal to
-    )
+    min_price = filters.NumberFilter(field_name="price", lookup_expr="gte")
+    max_price = filters.NumberFilter(field_name="price", lookup_expr="lte")
+    min_stock = filters.NumberFilter(field_name="stock", lookup_expr="gte")
+    max_stock = filters.NumberFilter(field_name="stock", lookup_expr="lte")
 
     class Meta:
         model = Product

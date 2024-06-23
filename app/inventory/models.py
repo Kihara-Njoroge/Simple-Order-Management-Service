@@ -1,8 +1,8 @@
 from django.db import models
-from django.utils.text import slugify
-from django.utils.translation import gettext_lazy as _
 from django.db.models.signals import post_save
 from django.dispatch import receiver
+from django.utils.text import slugify
+from django.utils.translation import gettext_lazy as _
 
 
 class Category(models.Model):
@@ -17,7 +17,6 @@ class Category(models.Model):
         return self.name
 
     def save(self, *args, **kwargs):
-        # Generate the slug from the name field
         if not self.slug:
             self.slug = slugify(self.name)
 
@@ -58,7 +57,6 @@ class Product(models.Model):
         return self.name
 
     def save(self, *args, **kwargs):
-        # Generate the slug from the name field
         if not self.slug:
             original_slug = slugify(self.name)
             queryset = Product.objects.all().exclude(pk=self.pk)

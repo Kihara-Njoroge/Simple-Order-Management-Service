@@ -1,3 +1,4 @@
+africastalking==1.2.7
 asgiref==3.8.1
 attrs==23.2.0
 certifi==2024.6.2
@@ -61,6 +62,7 @@ referencing==0.35.1
 requests==2.32.3
 requests-oauthlib==2.0.0
 rpds-py==0.18.1
+schema==0.7.7
 six==1.16.0
 social-auth-app-django==5.4.1
 social-auth-core==4.5.4

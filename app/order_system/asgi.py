@@ -1,5 +1,5 @@
 """
-ASGI config for order management service project.
+ASGI config for order_system project.
 
 It exposes the ASGI callable as a module-level variable named ``application``.
 
@@ -11,6 +11,6 @@ import os
 
 from django.core.asgi import get_asgi_application
 
-os.environ.setdefault("DJANGO_SETTINGS_MODULE", "app.order_service.settings")
+os.environ.setdefault("DJANGO_SETTINGS_MODULE", "order_system.settings")
 
 application = get_asgi_application()
