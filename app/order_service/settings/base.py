@@ -21,6 +21,7 @@ INSTALLED_APPS = [
     "drf_spectacular",
     "corsheaders",
     "app.users",
+    "app.inventory",
 ]
 
 AUTHENTICATION_BACKENDS = (
