@@ -1,11 +1,13 @@
 from django.db import models
 from django.utils.text import slugify
 from django.utils.translation import gettext_lazy as _
+from django.db.models.signals import post_save
+from django.dispatch import receiver
 
 
 class Category(models.Model):
-    name = models.CharField(max_length=100)
-    slug = models.SlugField(unique=True)  # Used for SEO-friendly URLs
+    name = models.CharField(max_length=100, unique=True)
+    slug = models.SlugField(unique=True)
 
     class Meta:
         verbose_name = _("Category")
@@ -16,19 +18,25 @@ class Category(models.Model):
 
     def save(self, *args, **kwargs):
         # Generate the slug from the name field
-        self.slug = slugify(self.name)
+        if not self.slug:
+            self.slug = slugify(self.name)
 
-        super(Category, self).save(*args, **kwargs)
+        super().save(*args, **kwargs)
 
 
-# set default category to others
+# Ensure that the "Others" category exists
+@receiver(post_save, sender=Category)
+def ensure_default_category_exists(sender, **kwargs):
+    Category.objects.get_or_create(name="Others")
+
+
 def get_default_category():
     return Category.objects.get_or_create(name="Others")[0]
 
 
 class Product(models.Model):
     name = models.CharField(max_length=200)
-    slug = models.SlugField(unique=True)
+    slug = models.SlugField(unique=True, blank=True)
     description = models.TextField(_("Description"), blank=True)
     price = models.DecimalField(max_digits=10, decimal_places=2)
     category = models.ForeignKey(
@@ -51,6 +59,14 @@ class Product(models.Model):
 
     def save(self, *args, **kwargs):
         # Generate the slug from the name field
-        self.slug = slugify(self.name)
+        if not self.slug:
+            original_slug = slugify(self.name)
+            queryset = Product.objects.all().exclude(pk=self.pk)
+            counter = 1
+            slug = original_slug
+            while queryset.filter(slug=slug).exists():
+                slug = f"{original_slug}-{counter}"
+                counter += 1
+            self.slug = slug
 
-        super(Product, self).save(*args, **kwargs)
+        super().save(*args, **kwargs)
