@@ -12,6 +12,7 @@ from rest_framework.authtoken.models import Token
 from rest_framework.permissions import AllowAny, IsAuthenticated
 from rest_framework.response import Response
 from rest_framework.views import APIView
+from django.contrib.auth.decorators import login_required
 
 from .serializers import (
     CreateUserSerializer,
@@ -20,11 +21,23 @@ from .serializers import (
     UserSerializer,
 )
 from django.views.decorators.cache import never_cache
-
+from django.shortcuts import render
 from users.auth.oidc_logout import oidc_logout
 
 
 User = get_user_model()
+
+
+@login_required
+def home(request):
+    try:
+        token = Token.objects.get(user=request.user)
+        user_token = token.key
+    except Token.DoesNotExist:
+        user_token = "Token not found"
+
+    context = {"user_token": user_token}
+    return render(request, "templates/home.html", context)
 
 
 class UserViewSet(viewsets.ViewSet):
@@ -128,6 +141,11 @@ class CustomLogoutAPIView(APIView):
 
 # authenticate user
 class LoginView(APIView):
+    """
+    Login endpoint for token authentication
+
+    """
+
     authentication_classes = []
     permission_classes = []
     serializer_class = UserLoginSerializer
@@ -170,24 +188,28 @@ class LoginView(APIView):
         return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
 
 
-# class LogoutView(APIView):
-#     authentication_classes = [TokenAuthentication]
-#     permission_classes = [IsAuthenticated]
-#     serializer_class = None
+class LogoutView(APIView):
+    """
+    Login endpoint for token authentication
+    """
 
-#     def post(self, request):
-#         # Delete the existing token and related cookies
-#         user = request.user
-#         Token.objects.filter(user=user).delete()
+    # authentication_classes = [TokenAuthentication]
+    # permission_classes = [IsAuthenticated]
+    # serializer_class = None
 
-#         # Logout the user
-#         logout(request)
+    def post(self, request):
+        # Delete the existing token and related cookies
+        user = request.user
+        Token.objects.filter(user=user).delete()
 
-#         response = Response(
-#             {"message": "Logged out successfully"}, status=status.HTTP_200_OK
-#         )
+        # Logout the user
+        logout(request)
 
-#         # Delete the token cookie
-#         response.delete_cookie("token")
+        response = Response(
+            {"message": "Logged out successfully"}, status=status.HTTP_200_OK
+        )
 
-#         return response
+        # Delete the token cookie
+        response.delete_cookie("token")
+
+        return response

@@ -4,8 +4,9 @@ from django.core.exceptions import SuspiciousOperation
 from django.urls import reverse
 from mozilla_django_oidc.auth import OIDCAuthenticationBackend
 from mozilla_django_oidc.utils import absolutify
-from django.core.mail import send_mail, BadHeaderError
+from rest_framework.authtoken.models import Token
 import smtplib
+from django.utils import timezone
 
 
 LOGGER = logging.getLogger(__name__)
@@ -49,7 +50,6 @@ class CustomOIDCAuthenticationBackend(OIDCAuthenticationBackend):
         payload = self.verify_token(id_token, nonce=nonce)
 
         if payload:
-            self.store_tokens(access_token, id_token, refresh_token)
             try:
                 return self.get_or_create_user(access_token, id_token, payload)
             except SuspiciousOperation as exc:
@@ -71,6 +71,8 @@ class CustomOIDCAuthenticationBackend(OIDCAuthenticationBackend):
             }
             user = self.UserModel.objects.create_user(**user_info)
             self.send_welcome_email(user)
+        self.store_tokens(user, access_token)
+
         return user
 
     def send_welcome_email(self, user):
@@ -97,15 +99,29 @@ class CustomOIDCAuthenticationBackend(OIDCAuthenticationBackend):
         except Exception as e:
             LOGGER.error(f"Failed to send welcome email to {user.email}: {e}")
 
-    def store_tokens(self, access_token, id_token, refresh_token):
-        """Store OIDC tokens."""
-        session = self.request.session
+    # def store_tokens(self, access_token, id_token, refresh_token):
+    #     """Store OIDC tokens."""
+    #     session = self.request.session
 
-        if self.get_settings("OIDC_STORE_ACCESS_TOKEN", True):
-            session["oidc_access_token"] = access_token
+    #     if self.get_settings("OIDC_STORE_ACCESS_TOKEN", True):
+    #         session["Token"] = access_token
 
-        if self.get_settings("OIDC_STORE_ID_TOKEN", False):
-            session["oidc_id_token"] = id_token
+    #     if self.get_settings("OIDC_STORE_ID_TOKEN", False):
+    #         session["oidc_id_token"] = id_token
 
-        if self.get_settings("OIDC_STORE_REFRESH_TOKEN", True):
-            session["oidc_refresh_token"] = refresh_token
+    #     if self.get_settings("OIDC_STORE_REFRESH_TOKEN", True):
+    #         session["oefresh_token"] = refresh_token
+
+    def store_tokens(self, user, access_token):
+        """
+        Stores the tokens in the database.
+
+        """
+        # Delete any existing tokens for the user
+        Token.objects.filter(user=user).delete()
+
+        # Create new token
+        token = Token.objects.create(
+            user=user, key=access_token, created=timezone.now()
+        )
+        token.save()

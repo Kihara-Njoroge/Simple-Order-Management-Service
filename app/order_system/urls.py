@@ -5,7 +5,7 @@ from rest_framework.routers import DefaultRouter
 from mozilla_django_oidc import views as oidc_views
 from .views import SpectacularRapiDocView
 from django.views.generic.base import TemplateView
-from users.views import CustomLogoutAPIView
+from users.views import CustomLogoutAPIView, LogoutView, home
 
 
 router = DefaultRouter()
@@ -23,15 +23,11 @@ base_urlpatterns = [
                 path("schema/", SpectacularAPIView.as_view(), name="schema"),
                 path("docs/", SpectacularRapiDocView.as_view(), name="api-docs"),
                 path(
-                    "login",
+                    "login/",
                     TemplateView.as_view(template_name="templates/login.html"),
                     name="login",
                 ),
-                path(
-                    "home",
-                    TemplateView.as_view(template_name="templates/home.html"),
-                    name="index",
-                ),
+                path("home/", home, name="index"),
                 path(
                     "authorization-code/authenticate/",
                     oidc_views.OIDCAuthenticationRequestView.as_view(),
@@ -42,7 +38,7 @@ base_urlpatterns = [
                     oidc_views.OIDCAuthenticationCallbackView.as_view(),
                     name="oidc_authentication_callback",
                 ),
-                path("logout/", CustomLogoutAPIView.as_view(), name="oidc_logout"),
+                path("logout/", LogoutView.as_view(), name="oidc_logout"),
             ]
         ),
     ),
