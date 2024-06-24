@@ -1,9 +1,12 @@
 import logging
-
+from django.conf import settings
 from django.core.exceptions import SuspiciousOperation
 from django.urls import reverse
 from mozilla_django_oidc.auth import OIDCAuthenticationBackend
 from mozilla_django_oidc.utils import absolutify
+from django.core.mail import send_mail, BadHeaderError
+import smtplib
+
 
 LOGGER = logging.getLogger(__name__)
 
@@ -46,7 +49,6 @@ class CustomOIDCAuthenticationBackend(OIDCAuthenticationBackend):
         payload = self.verify_token(id_token, nonce=nonce)
 
         if payload:
-            print(payload)
             self.store_tokens(access_token, id_token, refresh_token)
             try:
                 return self.get_or_create_user(access_token, id_token, payload)
@@ -65,10 +67,35 @@ class CustomOIDCAuthenticationBackend(OIDCAuthenticationBackend):
                 "username": payload.get("preferred_username", payload.get("sub")),
                 "name": payload.get("name", ""),
                 "email": payload.get("email"),
-                "password": self.UserModel.objects.make_random_password(),
+                "password": "123456",
             }
             user = self.UserModel.objects.create_user(**user_info)
+            self.send_welcome_email(user)
         return user
+
+    def send_welcome_email(self, user):
+        subject = "Account setup completion"
+        message = f"Hi {user.name},\n\nThank you for signing in. We are glad to have you with us. Please login to update your phone number for a better experience. Your temporary password is 123456."
+        from_email = settings.DEFAULT_FROM_EMAIL
+        body = f"Subject: {subject}\n\n{message}"
+        recipient_list = [user.email]
+
+        try:
+            # For SSL connection (port 465)
+            server = smtplib.SMTP_SSL("smtp.zoho.com", 465)
+            server.login(from_email, settings.EMAIL_HOST_PASSWORD)
+
+            # Or, for TLS connection (port 587)
+            # server = smtplib.SMTP("smtp.zoho.com", 587)
+            # server.starttls()
+            # server.login(from_email, settings.EMAIL_HOST_PASSWORD)
+
+            for email in recipient_list:
+                server.sendmail(settings.DEFAULT_FROM_EMAIL, email, body)
+
+            server.quit()
+        except Exception as e:
+            LOGGER.error(f"Failed to send welcome email to {user.email}: {e}")
 
     def store_tokens(self, access_token, id_token, refresh_token):
         """Store OIDC tokens."""
