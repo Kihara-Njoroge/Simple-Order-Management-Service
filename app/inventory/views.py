@@ -68,6 +68,7 @@ class ProductCategoryViewSet(viewsets.ModelViewSet):
 class ProductReadViewSet(viewsets.ReadOnlyModelViewSet):
     """
     Products reading viewset (customers).
+
     """
 
     queryset = Product.objects.all()
@@ -84,6 +85,8 @@ class ProductWriteViewSet(viewsets.ModelViewSet):
     queryset = Product.objects.all()
     serializer_class = ProductWriteSerializer
     permission_classes = [permissions.IsAdminUser]
+    filter_backends = [DjangoFilterBackend]
+    filterset_class = ProductFilter
 
     def create(self, request, *args, **kwargs):
         product_name = request.data.get("name")
