@@ -13,8 +13,7 @@ faker = FakeFactory.create()
 # user factory
 @factory.django.mute_signals(post_save)
 class UserFactory(factory.django.DjangoModelFactory):
-    first_name = factory.LazyAttribute(lambda x: faker.first_name())
-    last_name = factory.LazyAttribute(lambda x: faker.last_name())
+    name = factory.LazyAttribute(lambda x: faker.first_name())
     username = factory.LazyAttribute(lambda x: faker.first_name())
     phone_number = factory.LazyAttribute(lambda x: faker.phone_number())
     email = factory.LazyAttribute(lambda x: faker.email())

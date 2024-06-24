@@ -17,8 +17,7 @@ class UserAdmin(BaseUserAdmin):
         "id",
         "email",
         "username",
-        "first_name",
-        "last_name",
+        "name",
         "phone_number",
         "is_staff",
         "is_active",
@@ -27,8 +26,7 @@ class UserAdmin(BaseUserAdmin):
     list_filter = [
         "email",
         "username",
-        "first_name",
-        "last_name",
+        "name",
         "is_staff",
         "is_active",
     ]
@@ -48,8 +46,7 @@ class UserAdmin(BaseUserAdmin):
             {
                 "fields": (
                     "username",
-                    "first_name",
-                    "last_name",
+                    "name",
                     "phone_number",
                 )
             },
@@ -77,7 +74,7 @@ class UserAdmin(BaseUserAdmin):
             },
         ),
     )
-    search_fields = ["email", "username", "first_name", "last_name"]
+    search_fields = ["email", "username", "name"]
 
 
 admin.site.register(User, UserAdmin)

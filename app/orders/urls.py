@@ -13,4 +13,5 @@ router.register(r"", OrderViewSet)
 urlpatterns = [
     path("", include(router.urls)),
 ]
+
 app_name = "orders"

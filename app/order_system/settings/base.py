@@ -28,6 +28,7 @@ INSTALLED_APPS = [
     "users",
     "inventory",
     "orders",
+    "mozilla_django_oidc",
 ]
 
 
@@ -39,7 +40,9 @@ MIDDLEWARE = [
     "django.contrib.auth.middleware.AuthenticationMiddleware",
     "django.contrib.messages.middleware.MessageMiddleware",
     "django.middleware.clickjacking.XFrameOptionsMiddleware",
+    "mozilla_django_oidc.middleware.SessionRefresh",
 ]
+
 
 ROOT_URLCONF = "order_system.urls"
 
@@ -62,6 +65,11 @@ TEMPLATES = [
 
 WSGI_APPLICATION = "order_system.wsgi.application"
 
+AUTHENTICATION_BACKENDS = (
+    "users.auth.custom_auth_backend.CustomOIDCAuthenticationBackend",
+    "django.contrib.auth.backends.ModelBackend",
+)
+
 
 AUTH_PASSWORD_VALIDATORS = [
     {
@@ -77,6 +85,17 @@ AUTH_PASSWORD_VALIDATORS = [
         "NAME": "django.contrib.auth.password_validation.NumericPasswordValidator",
     },
 ]
+
+DATABASES = {
+    "default": {
+        "ENGINE": config("DB_ENGINE"),
+        "NAME": config("DB_NAME"),
+        "USER": config("DB_USER"),
+        "PASSWORD": config("DB_PASSWORD"),
+        "HOST": config("DB_HOST"),
+        "PORT": config("DB_PORT"),
+    }
+}
 
 
 LANGUAGE_CODE = "en-us"
@@ -103,14 +122,66 @@ REST_FRAMEWORK = {
     ],
 }
 
-
-SPECTACULAR_SETTINGS = {
-    "DESCRIPTION": "Order management service",
-    "VALID_LANGUAGES": ["en"],
-    "VERSION": "1.0.0",
-    "SERVE_INCLUDE_SCHEMA": False,
-    "COMPONENT_SPLIT_REQUEST": True,
-}
 SPECTACULAR_AUTO_SCHEMA = True
 
 AUTH_USER_MODEL = "users.User"
+
+LOGIN_REDIRECT_URL = "index"
+LOGOUT_REDIRECT_URL = "index"
+
+# okta oidc configs
+OKTA_DOMAIN = config("OKTA_DOMAIN")
+OIDC_RP_CLIENT_ID = config("OKTA_CLIENT_ID")
+OIDC_RP_CLIENT_SECRET = config("OKTA_CLIENT_SECRET")
+OIDC_RP_SIGN_ALGO = "RS256"
+OIDC_OP_AUTHORIZATION_ENDPOINT = f"https://{OKTA_DOMAIN}/oauth2/default/v1/authorize"
+OIDC_RP_TOKEN_ENDPOINT = f"https://{OKTA_DOMAIN}/oauth2/default/v1/token"
+OIDC_OP_USER_ENDPOINT = f"https://{OKTA_DOMAIN}/oauth2/default/v1/userinfo"
+OIDC_OP_TOKEN_ENDPOINT = f"https://{OKTA_DOMAIN}/oauth2/default/v1/token"
+OIDC_OP_JWKS_ENDPOINT = f"https://{OKTA_DOMAIN}/oauth2/default/v1/keys"
+OIDC_OP_TOKEN_REVOKE_ENDPOINT = f"https://{OKTA_DOMAIN}/oauth2/default/v1/revoke"
+OIDC_RENEW_ID_TOKEN_EXPIRY_SECONDS = 60 * 60
+OIDC_STORE_ACCESS_TOKEN = config("OIDC_STORE_ACCESS_TOKEN", True)
+OIDC_STORE_ID_TOKEN = config("OIDC_STORE_ID_TOKEN", True)
+OIDC_STORE_REFRESH_TOKEN = config("OIDC_STORE_REFRESH_TOKEN", True)
+OIDC_RP_SCOPES = config("OIDC_RP_SCOPES", "openid profile email offline_access")
+OIDC_EXEMPT_URLS = [
+    "oidc_authentication_init",
+    "oidc_authentication_callback",
+    "logout",
+]
+
+SPECTACULAR_SETTINGS = {
+    "TITLE": "Savannah Order Management Service.",
+    "DESCRIPTION": "A simple order management api",
+    "VERSION": "1.0.0",
+    "SECURITY": [{"Okta": ["openid", "email", "profile", "offline_access"]}],
+    "APPEND_COMPONENTS": {
+        "securitySchemes": {
+            "Okta": {
+                "type": "oauth2",
+                "flows": {
+                    "authorizationCode": {
+                        "authorizationUrl": OIDC_OP_AUTHORIZATION_ENDPOINT,
+                        "tokenUrl": OIDC_OP_TOKEN_ENDPOINT,
+                        "scopes": {
+                            "openid": "OpenID Connect scope",
+                            "email": "Email scope",
+                            "profile": "Profile scope",
+                            "offline_access": "Offline access scope",
+                        },
+                    }
+                },
+            }
+        }
+    },
+}
+
+
+EMAIL_BACKEND = "django.core.mail.backends.smtp.EmailBackend"
+EMAIL_HOST = config("EMAIL_HOST")
+EMAIL_PORT = config("EMAIL_PORT", cast=int)
+EMAIL_USE_TLS = config("EMAIL_USE_TLS", cast=bool)
+EMAIL_HOST_USER = config("EMAIL_HOST_USER")
+DEFAULT_FROM_EMAIL = config("DEFAULT_FROM_EMAIL")
+EMAIL_HOST_PASSWORD = config("EMAIL_HOST_PASSWORD")

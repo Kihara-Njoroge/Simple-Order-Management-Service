@@ -19,8 +19,7 @@ class ProductCategoryViewSetTestCase(APITestCase):
             username="admin",
             email="admin@example.com",
             phone_number="+254799757242",
-            first_name="john",
-            last_name="doe",
+            name="john",
             password="adminpassword",
         )
         self.client.force_authenticate(user=self.admin_user)
@@ -57,8 +56,7 @@ class ProductWriteViewSetTestCase(APITestCase):
             username="admin",
             email="admin@example.com",
             phone_number="+254799757242",
-            first_name="john",
-            last_name="doe",
+            name="john doe",
             password="adminpassword",
         )
         self.client.force_authenticate(user=self.admin_user)

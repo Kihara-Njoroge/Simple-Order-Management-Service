@@ -13,11 +13,11 @@ class User(AbstractBaseUser, PermissionsMixin):
     pkid = models.BigAutoField(primary_key=True, editable=False)
     id = models.UUIDField(default=uuid.uuid4, editable=False, unique=True)
     username = models.CharField(verbose_name=_("Username"), max_length=255, unique=True)
-    first_name = models.CharField(verbose_name=_("First Name"), max_length=255)
-    last_name = models.CharField(verbose_name=_("Last Name"), max_length=255)
+    name = models.CharField(verbose_name=_("Name"), max_length=255)
     phone_number = PhoneNumberField(
-        verbose_name=_("Phone number"), max_length=30, unique=True
+        verbose_name=_("Phone number"), max_length=30, null=True, blank=True
     )
+
     email = models.EmailField(verbose_name=_("Email Address"), unique=True)
     is_staff = models.BooleanField(default=False)
     is_active = models.BooleanField(default=True)
@@ -25,7 +25,7 @@ class User(AbstractBaseUser, PermissionsMixin):
 
     # declare username field and required fields
     USERNAME_FIELD = "email"
-    REQUIRED_FIELDS = ["username", "first_name", "last_name", "phone_number"]
+    REQUIRED_FIELDS = ["username", "name"]
 
     objects = CustomUserManager()
 
@@ -42,7 +42,7 @@ class User(AbstractBaseUser, PermissionsMixin):
     # define properties
     @property
     def get_full_name(self):
-        return f"{self.first_name} {self.last_name}"
+        return self.name
 
     def get_short_name(self):
         return self.username
