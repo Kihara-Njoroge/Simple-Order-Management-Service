@@ -122,14 +122,6 @@ REST_FRAMEWORK = {
     ],
 }
 
-
-SPECTACULAR_SETTINGS = {
-    "DESCRIPTION": "Order management service",
-    "VALID_LANGUAGES": ["en"],
-    "VERSION": "1.0.0",
-    "SERVE_INCLUDE_SCHEMA": False,
-    "COMPONENT_SPLIT_REQUEST": True,
-}
 SPECTACULAR_AUTO_SCHEMA = True
 
 AUTH_USER_MODEL = "users.User"
@@ -158,3 +150,29 @@ OIDC_EXEMPT_URLS = [
     "oidc_authentication_callback",
     "logout",
 ]
+
+SPECTACULAR_SETTINGS = {
+    "TITLE": "Savannah Order Management Service.",
+    "DESCRIPTION": "A simple order management api",
+    "VERSION": "1.0.0",
+    "SECURITY": [{"Okta": ["openid", "email", "profile", "offline_access"]}],
+    "APPEND_COMPONENTS": {
+        "securitySchemes": {
+            "Okta": {
+                "type": "oauth2",
+                "flows": {
+                    "authorizationCode": {
+                        "authorizationUrl": OIDC_OP_AUTHORIZATION_ENDPOINT,
+                        "tokenUrl": OIDC_OP_TOKEN_ENDPOINT,
+                        "scopes": {
+                            "openid": "OpenID Connect scope",
+                            "email": "Email scope",
+                            "profile": "Profile scope",
+                            "offline_access": "Offline access scope",
+                        },
+                    }
+                },
+            }
+        }
+    },
+}

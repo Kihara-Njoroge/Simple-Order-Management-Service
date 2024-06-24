@@ -6,6 +6,7 @@ from rest_framework.renderers import TemplateHTMLRenderer
 from rest_framework.response import Response
 from rest_framework.reverse import reverse
 from rest_framework.views import APIView
+from django.conf import settings
 
 
 class SpectacularRapiDocView(APIView):
@@ -24,6 +25,8 @@ class SpectacularRapiDocView(APIView):
                 "title": self.title,
                 "dist": "https://cdn.jsdelivr.net/npm/rapidoc@latest",
                 "schema_url": self._get_schema_url(request),
+                "client_id": settings.OIDC_RP_CLIENT_ID,
+                "client_secret": settings.OIDC_RP_CLIENT_SECRET,
             },
             template_name=self.template_name,
         )
