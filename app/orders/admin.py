@@ -16,8 +16,7 @@ class OrderAdmin(admin.ModelAdmin):
     search_fields = (
         "order_no",
         "buyer__username",
-        "buyer__first_name",
-        "buyer__last_name",
+        "buyer__name",
     )
     list_per_page = 20
 
