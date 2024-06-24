@@ -11,11 +11,8 @@ BASE_DIR = Path(__file__).resolve().parent.parent
 
 DEBUG = config("DEBUG") == "True"
 SECRET_KEY = config("SECRET_KEY")
-AFRICASTALKING_USERNAME = config("AFRICASTALKING_USERNAME", "sandbox")
-AFRICASTALKING_API_KEY = config(
-    "AFRICASTALKING_API_KEY",
-    "c9e627eb5fc7f6e7851f3dbce4b0c94a81479cf8e16ea861fdf83bb5c2dce41f",
-)
+AFRICASTALKING_USERNAME = config("AFRICASTALKING_USERNAME")
+AFRICASTALKING_API_KEY = config("AFRICASTALKING_API_KEY")
 
 INSTALLED_APPS = [
     "django.contrib.admin",
@@ -101,7 +98,11 @@ REST_FRAMEWORK = {
     "DEFAULT_AUTHENTICATION_CLASSES": [
         "rest_framework.authentication.TokenAuthentication",
     ],
+    "DEFAULT_PERMISSION_CLASSES": [
+        "rest_framework.permissions.IsAuthenticated",
+    ],
 }
+
 
 SPECTACULAR_SETTINGS = {
     "DESCRIPTION": "Order management service",

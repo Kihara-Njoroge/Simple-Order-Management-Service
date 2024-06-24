@@ -98,6 +98,7 @@ class OrderReadSerializer(serializers.ModelSerializer):
 class OrderWriteSerializer(serializers.ModelSerializer):
     """
     Serializer class for creating and updating orders.
+
     """
 
     buyer = serializers.HiddenField(default=serializers.CurrentUserDefault())

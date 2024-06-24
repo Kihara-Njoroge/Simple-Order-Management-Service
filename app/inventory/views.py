@@ -18,7 +18,7 @@ class ProductCategoryViewSet(viewsets.ModelViewSet):
 
     queryset = Category.objects.all()
     serializer_class = ProductCategoryReadSerializer
-    # permission_classes = [permissions.IsAdminUser]
+    permission_classes = [permissions.IsAdminUser]
 
     def create(self, request, *args, **kwargs):
         category_name = request.data.get("name")
@@ -83,7 +83,7 @@ class ProductWriteViewSet(viewsets.ModelViewSet):
 
     queryset = Product.objects.all()
     serializer_class = ProductWriteSerializer
-    ##permission_classes = [permissions.IsAdminUser]
+    permission_classes = [permissions.IsAdminUser]
 
     def create(self, request, *args, **kwargs):
         product_name = request.data.get("name")
@@ -93,11 +93,11 @@ class ProductWriteViewSet(viewsets.ModelViewSet):
                 {"detail": "Product already exists"},
                 status=status.HTTP_400_BAD_REQUEST,
             )
-        # if not request.user.is_staff:
-        #     return Response(
-        #         {"detail": "You do not have permission to create products."},
-        #         status=status.HTTP_403_FORBIDDEN,
-        #     )
+        if not request.user.is_staff:
+            return Response(
+                {"detail": "You do not have permission to create products."},
+                status=status.HTTP_403_FORBIDDEN,
+            )
         return super().create(request, *args, **kwargs)
 
     def update(self, request, *args, **kwargs):

@@ -1,21 +1,17 @@
 # tasks.py
 import africastalking
-from django.conf import settings
+from decouple import config
 
-from .models import Order
+username = config("AFRICASTALKING_USERNAME")
+api_key = config("AFRICASTALKING_API_KEY")
 
 
-def send_order_confirmation_sms(order_id):
-    order = Order.objects.get(id=order_id)
-    # customer_phone = str(order.buyer.phone_number)
-    customer_phone = "+254798556797"
-
-    africastalking.initialize(
-        settings.AFRICASTALKING_USERNAME, settings.AFRICASTALKING_API_KEY
-    ),
+def send_order_confirmation_sms(order):
+    customer_phone = str(order.buyer.phone_number)
+    africastalking.initialize(username, api_key)
     sms = africastalking.SMS
 
-    message = f"Thank you for shopping with us! Your order tracking no. is {order.order_no}. Total Amount: {order.total_cost}."
+    message = f"Thank you for shopping with us! Your order tracking no. is {order.order_no}. Total Amount: KES {order.total_cost}."
 
     def on_finish(error, response):
         if error is not None:

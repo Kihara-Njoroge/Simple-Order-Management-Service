@@ -55,9 +55,7 @@ class OrderViewSet(viewsets.ModelViewSet):
     """
 
     queryset = Order.objects.all()
-    # permission_classes = [IsAuthenticated]
-
-    # enable filtering by order status
+    permission_classes = [IsAuthenticated]
     filter_backends = [filters.OrderingFilter]
 
     def get_serializer_class(self):
@@ -69,10 +67,11 @@ class OrderViewSet(viewsets.ModelViewSet):
         res = super().get_queryset()
         user = self.request.user
 
-        # Retrieve the "status" query parameter from the URL
+        if not user.is_authenticated:
+            return Order.objects.none()
+
         status_param = self.request.query_params.get("status")
 
-        # Filter orders by status if the "status" query parameter is provided
         if status_param:
             res = res.filter(status=status_param)
         return res.filter(buyer=user)
@@ -86,6 +85,7 @@ class OrderViewSet(viewsets.ModelViewSet):
     def checkout(self, request, pk=None):
         """
         Perform order checkout.
+
         """
         order = self.get_object()
 
@@ -95,28 +95,15 @@ class OrderViewSet(viewsets.ModelViewSet):
                 status=status.HTTP_400_BAD_REQUEST,
             )
 
-        # Check and update product stock
-        for item in order.order_items.all():
-            if item.quantity > item.product.stock:
-                return Response(
-                    {"error": f"Not enough stock available for {item.product.name}."},
-                    status=status.HTTP_400_BAD_REQUEST,
-                )
-
-        # Deduct stock and save order status
-        for item in order.order_items.all():
-            item.product.stock -= item.quantity
-            item.product.save()
-
         order.status = Order.COMPLETED
         order.save()
 
         # Trigger the task to send SMS
-        send_order_confirmation_sms(order.id)
+        send_order_confirmation_sms(order)
 
         return Response(
             {
-                "message": "Order placed successfully. You will receive a confirmation message shortly."
+                "message": "Order Completed successfully. You will receive a confirmation message shortly."
             },
             status=status.HTTP_200_OK,
         )

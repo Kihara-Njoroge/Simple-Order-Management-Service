@@ -24,8 +24,8 @@ class Order(models.Model):
     class Meta:
         ordering = ("-created_at",)
 
-    def __str__(self):
-        return f"Order {self.order_no} by {self.buyer.get_full_name()}"
+    # def __str__(self):
+    #     return f"Order {self.order_no} by {self.buyer.get_full_name()}"
 
     @property
     def total_cost(self):
@@ -51,8 +51,8 @@ class OrderItem(models.Model):
         ordering = ("-created_at",)
         unique_together = ("order", "product")
 
-    def __str__(self):
-        return f"{self.quantity} of {self.product.name} for {self.order.buyer.get_full_name()}"
+    # def __str__(self):
+    #     return f"{self.quantity} of {self.product.name} for {self.order.buyer.get_full_name()}"
 
     @property
     def cost(self):
