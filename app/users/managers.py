@@ -1,6 +1,9 @@
+from datetime import datetime, timedelta
+
 from django.contrib.auth.base_user import BaseUserManager
 from django.core.exceptions import ValidationError
 from django.core.validators import validate_email
+from django.utils import timezone
 from django.utils.translation import gettext_lazy as _
 
 
@@ -24,18 +27,18 @@ class CustomUserManager(BaseUserManager):
         **extra_fields
     ):
         if not username:
-            raise ValueError(_("Username is required."))
+            raise ValueError(_("users must provide a username"))
         if not first_name:
-            raise ValueError(_("First name is required."))
+            raise ValueError(_("users must provide a first name"))
         if not last_name:
-            raise ValueError(_("Last name is required."))
+            raise ValueError(_("users must provide a last name"))
         if not phone_number:
-            raise ValueError(_("Phone number is required."))
+            raise ValueError(_("users must provide a phone_number"))
         if email:
             email = self.normalize_email(email)
             self.email_validator(email)
         else:
-            raise ValueError(_("Email is required."))
+            raise ValueError(_("an email address is required"))
 
         user = self.model(
             username=username,
@@ -75,7 +78,7 @@ class CustomUserManager(BaseUserManager):
             email = self.normalize_email(email)
             self.email_validator(email)
         else:
-            raise ValueError(_("Email is required for admin account."))
+            raise ValueError(_("an email address is required for admin account"))
 
         user = self.create_user(
             username,

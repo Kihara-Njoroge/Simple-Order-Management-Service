@@ -1,4 +1,3 @@
-from django.views.generic import TemplateView
 from drf_spectacular.plumbing import get_relative_url, set_query_parameters
 from drf_spectacular.settings import spectacular_settings
 from drf_spectacular.utils import extend_schema
@@ -38,11 +37,3 @@ class SpectacularRapiDocView(APIView):
             lang=request.GET.get("lang"),
             version=request.GET.get("version"),
         )
-
-
-class OAuthReceiverView(TemplateView):
-    template_name = "templates/oauth-receiver.html"
-
-
-rapidoc_view = SpectacularRapiDocView.as_view()
-oauth_receiver_view = OAuthReceiverView.as_view()
