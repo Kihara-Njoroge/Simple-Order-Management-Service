@@ -23,7 +23,7 @@ base_urlpatterns = [
                 path("schema/", SpectacularAPIView.as_view(), name="schema"),
                 path("docs/", SpectacularRapiDocView.as_view(), name="api-docs"),
                 path(
-                    "login/",
+                    "login/oidc",
                     TemplateView.as_view(template_name="templates/login.html"),
                     name="login",
                 ),
