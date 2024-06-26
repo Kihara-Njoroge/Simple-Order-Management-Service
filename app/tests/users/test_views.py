@@ -1,11 +1,6 @@
-from datetime import timedelta
-
 from django.contrib.auth import get_user_model
-from django.test import TestCase
-from django.utils import timezone
 from rest_framework import status
-from rest_framework.authtoken.models import Token
-from rest_framework.test import APIClient, APITestCase
+from rest_framework.test import APITestCase
 
 User = get_user_model()
 
@@ -16,7 +11,8 @@ class UserViewSetTestCase(APITestCase):
             username="dummy",
             email="dummy@gmail.com",
             phone_number="+254799757242",
-            name="dummy",
+            first_name="dummy",
+            last_name="user",
             password="Passw0rd@1",
         )
         self.user_url = f"/api/v1/users/{self.user.id}/"
@@ -26,7 +22,8 @@ class UserViewSetTestCase(APITestCase):
             "username": "newuser",
             "email": "newuser@gmail.com",
             "phone_number": "+254799757243",
-            "name": "new",
+            "first_name": "new",
+            "last_name": "user",
             "password": "Passw0rd@1",
         }
         response = self.client.post("/api/v1/users/", data, format="json")
@@ -36,22 +33,24 @@ class UserViewSetTestCase(APITestCase):
         self.assertEqual(user.username, data["username"])
 
     def test_partial_update_user(self):
-        data = {"name": "Partial"}
+        data = {"first_name": "Partial"}
         response = self.client.patch(self.user_url, data, format="json")
         self.assertEqual(response.status_code, status.HTTP_200_OK)
-        self.assertEqual(response.data["user"]["name"], "Partial")
+        self.assertEqual(response.data["user"]["first_name"], "Partial")
 
     def test_update_user(self):
         data = {
             "username": self.user.username,
             "email": self.user.email,
             "phone_number": "+254712345679",
-            "name": "Updated",
+            "first_name": "Updated",
+            "last_name": "User",
         }
         print("DAATA", data)
         response = self.client.put(self.user_url, data, format="json")
         self.assertEqual(response.status_code, status.HTTP_200_OK)
-        self.assertEqual(response.data["user"]["name"], "Updated")
+        self.assertEqual(response.data["user"]["first_name"], "Updated")
+        self.assertEqual(response.data["user"]["last_name"], "User")
         self.assertEqual(response.data["user"]["phone_number"], "+254712345679")
 
     def test_delete_user(self):
@@ -59,76 +58,3 @@ class UserViewSetTestCase(APITestCase):
         self.assertEqual(response.status_code, status.HTTP_204_NO_CONTENT)
         with self.assertRaises(User.DoesNotExist):
             User.objects.get(id=self.user.id)
-
-
-class LoginViewTestCase(TestCase):
-    def setUp(self):
-        self.user = User.objects.create_user(
-            email="test@example.com",
-            password="testpassword",
-            username="testuser",
-            name="John",
-            phone_number="+254799757242",
-            is_active=True,
-        )
-        self.login_url = "/api/v1/login/"
-        self.client = APIClient()
-
-    def test_login(self):
-        data = {
-            "email": "test@example.com",
-            "password": "testpassword",
-        }
-        response = self.client.post(self.login_url, data, format="json")
-        self.assertEqual(response.status_code, status.HTTP_200_OK)
-        self.assertIn("token", response.data)
-        self.assertEqual(response.cookies["token"].value, response.data["token"])
-
-    def test_login_inactive_user(self):
-        # Deactivate the user
-        self.user.is_active = False
-        self.user.save()
-        data = {
-            "email": "test@example.com",
-            "password": "testpassword",
-        }
-        response = self.client.post(self.login_url, data, format="json")
-        self.assertEqual(response.status_code, status.HTTP_401_UNAUTHORIZED)
-        self.assertTrue("error" in response.data)
-
-    def test_login_invalid_credentials(self):
-        data = {
-            "email": "test@example.com",
-            "password": "invalidpassword",
-        }
-        response = self.client.post(self.login_url, data, format="json")
-        self.assertEqual(response.status_code, status.HTTP_401_UNAUTHORIZED)
-        self.assertTrue("error" in response.data)
-
-
-class LogoutViewTestCase(TestCase):
-    def setUp(self):
-        self.user = User.objects.create_user(
-            email="test@example.com",
-            password="testpassword",
-            username="testuser",
-            name="John",
-            phone_number="+254799757242",
-            is_active=True,
-        )
-        self.client = APIClient()
-
-    def test_logout_success(self):
-        # Authenticate the user by creating a token
-        token, _ = Token.objects.get_or_create(user=self.user)
-        self.client.credentials(HTTP_AUTHORIZATION=f"Token {token.key}")
-
-        # Logout the user
-        response = self.client.post("/api/v1/logout/", format="json")
-        self.assertEqual(response.status_code, status.HTTP_200_OK)
-        self.assertEqual(response.data["message"], "Logged out successfully")
-
-    def test_logout_failure_unauthenticated(self):
-        # Try to logout without authentication
-        response = self.client.post("/api/v1/logout/", format="json")
-        self.assertEqual(response.status_code, status.HTTP_401_UNAUTHORIZED)

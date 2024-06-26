@@ -1,13 +1,8 @@
 from datetime import timedelta
-
-import requests
-from django.conf import settings
 from django.contrib.auth import authenticate, get_user_model, login, logout
-from django.shortcuts import redirect
 from django.utils import timezone
 from drf_spectacular.utils import extend_schema
 from rest_framework import status, viewsets
-from rest_framework.authentication import TokenAuthentication
 from rest_framework.authtoken.models import Token
 from rest_framework.permissions import AllowAny, IsAuthenticated
 from rest_framework.response import Response
@@ -22,7 +17,7 @@ from .serializers import (
 )
 from django.views.decorators.cache import never_cache
 from django.shortcuts import render
-from users.auth.oidc_logout import oidc_logout
+from app.users.auth.oidc_logout import oidc_logout
 
 
 User = get_user_model()

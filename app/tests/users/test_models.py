@@ -46,7 +46,8 @@ def test_create_user_with_no_email():
         User.objects.create_user(
             username="test",
             email="",
-            name="John",
+            first_name="John",
+            last_name="Doe",
             phone_number="1234567890",
             password="password",
         )
@@ -58,7 +59,8 @@ def test_create_use_with_no_username():
     with pytest.raises(TypeError) as err:
         User.objects.create_user(
             email="test@example.com",
-            name="John",
+            first_name="John",
+            last_name="Doe",
             phone_number="1234567890",
             password="password",
         )
@@ -74,7 +76,8 @@ def test_create_use_with_no_phone_number():
         User.objects.create_user(
             username="test",
             email="test@example.com",
-            name="John",
+            first_name="John",
+            last_name="Doe",
             password="password",
         )
     assert (
@@ -89,12 +92,29 @@ def test_create_user_with_no_firstname():
         User.objects.create_user(
             username="test",
             email="test@example.com",
+            last_name="Doe",
             phone_number="1234567890",
             password="password",
         )
     assert (
         str(err.value)
-        == "CustomUserManager.create_user() missing 1 required positional argument: 'name'"
+        == "CustomUserManager.create_user() missing 1 required positional argument: 'first_name'"
+    )
+
+
+def test_create_user_with_no_lastname():
+    """Test creating a new user without a last name raises an error"""
+    with pytest.raises(TypeError) as err:
+        User.objects.create_user(
+            username="test",
+            email="test@example.com",
+            first_name="John",
+            phone_number="1234567890",
+            password="password",
+        )
+    assert (
+        str(err.value)
+        == "CustomUserManager.create_user() missing 1 required positional argument: 'last_name'"
     )
 
 
@@ -103,7 +123,8 @@ def test_create_superuser_with_no_email():
     with pytest.raises(ValueError) as err:
         User.objects.create_superuser(
             username="admin",
-            name="Admin",
+            first_name="Admin",
+            last_name="User",
             phone_number="1234567890",
             password="password",
             email=None,
@@ -116,7 +137,8 @@ def test_create_superuser_with_no_password():
     with pytest.raises(ValueError) as err:
         User.objects.create_superuser(
             username="admin",
-            name="Admin",
+            first_name="Admin",
+            last_name="User",
             phone_number="1234567890",
             password=None,
             email="admin@example.com",
