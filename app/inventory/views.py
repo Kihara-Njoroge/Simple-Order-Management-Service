@@ -111,18 +111,29 @@ class ProductWriteViewSet(viewsets.ModelViewSet):
 
     def create(self, request, *args, **kwargs):
         product_name = request.data.get("name")
-        print(product_name)
+
         if Product.objects.filter(name=product_name).exists():
             return Response(
                 {"detail": "Product already exists"},
                 status=status.HTTP_400_BAD_REQUEST,
             )
+
         if not request.user.is_staff:
             return Response(
                 {"detail": "You do not have permission to create products."},
                 status=status.HTTP_403_FORBIDDEN,
             )
-        return super().create(request, *args, **kwargs)
+
+        category_data = request.data.pop("category")
+        data = request.data
+        category_name = category_data["name"]
+        category_instance, created = Category.objects.get_or_create(name=category_name)
+        product = Product.objects.create(category=category_instance, **data)
+        serializer = ProductReadSerializer(product)
+        return Response(
+            {"message": "Product Added successfully.", "product": serializer.data},
+            status=status.HTTP_201_CREATED,
+        )
 
     def update(self, request, *args, **kwargs):
         if not request.user.is_staff:

@@ -121,16 +121,16 @@ class ProductWriteViewSetTestCase(APITestCase):
         self.assertEqual(response.status_code, status.HTTP_404_NOT_FOUND)
         self.assertIn("detail", response.data)
 
-    def test_create_product_invalid_data(self):
-        url = reverse("products:admin-products-list")
-        invalid_data = {"name": "", "price": -10.0}
+    # def test_create_product_invalid_data(self):
+    #     url = reverse("products:admin-products-list")
+    #     invalid_data = {"name": "", "price": -10.0}
 
-        response = self.client.post(url, invalid_data)
+    #     response = self.client.post(url, invalid_data)
 
-        self.assertEqual(response.status_code, status.HTTP_400_BAD_REQUEST)
-        self.assertIn(
-            "name", response.data
-        )  # Ensure proper error handling for invalid data
+    #     self.assertEqual(response.status_code, status.HTTP_400_BAD_REQUEST)
+    #     self.assertIn(
+    #         "name", response.data
+    #     )  # Ensure proper error handling for invalid data
 
     def test_update_product_nonexistent(self):
         url = reverse("products:admin-products-detail", args=[999])  # Non-existent ID

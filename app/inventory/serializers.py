@@ -65,9 +65,11 @@ class ProductWriteSerializer(serializers.ModelSerializer):
         return value
 
     def create(self, validated_data):
-        category = validated_data.pop("category")
-        instance, created = Category.objects.get_or_create(**category)
-        product = Product.objects.create(**validated_data, category=instance)
+        category_data = validated_data.pop("category")
+        category_name = category_data["name"]
+        category_instance, created = Category.objects.get_or_create(name=category_name)
+
+        product = Product.objects.create(category=category_instance, **validated_data)
         return product
 
     def update(self, instance, validated_data):
