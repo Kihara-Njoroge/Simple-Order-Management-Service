@@ -1,1 +1,1 @@
-[![codecov](https://codecov.io/gh/Kihara-Njoroge/Simple-Order-Management-Service/branch/master/graph/badge.svg)](https://codecov.io/gh/Kihara-Njoroge/Simple-Order-Management-Service)
+[![codecov](https://codecov.io/gh/Kihara-Njoroge/Simple-Order-Management-Service/branch/master/graph/badge.svg??token=8db1c663-6267-4125-be7f-3d8658f7f689)](https://codecov.io/gh/Kihara-Njoroge/Simple-Order-Management-Service)
