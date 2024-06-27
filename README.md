@@ -50,7 +50,7 @@ A simple customer ordering system api built using Django rest framework.
 2. PostgreSQL
 4. Docker and Docker compose
 5. Nginx and Gunicorn
-6. Google Cloud Platform , Google Kubernetes Engine
+6. Azure
 7. Kubernetes
 8. Drf spectacular, Swagger UI, and Rapidoc
 9. CI/CD - Jenkins
@@ -62,12 +62,13 @@ Clone this repository to your machine
 https://github.com/Kihara-Njoroge/Order-Management-System-API.git
 ```
 
-Rename the ```.env.example``` and ```.env.db.example``` file found in the project's root directory to ```.env``` & ```.env.db``` and update the variables.
+Rename the ```.env.example``` file found in the project's root directory to ```.env``` and update the variables.
 
 Ensure you have Docker, docker-compose, Minikube, kubectl, Jenkins installed.
 
 ## Build and Run:
  ### Locally
+
 ```
 docker compose build
 docker compose up
@@ -75,19 +76,7 @@ docker compose up
 ```
  - Navigate to http://localhost/api/v1/docs to view the API endpoints documentation.
 
- ### Production
 ```
-docker-compose -f docker-compose.prod.yml down -v
-docker-compose -f docker-compose.prod.yml up -d --build
-docker-compose -f docker-compose.prod.yml exec web python manage.py migrate --noinput
-docker-compose -f docker-compose.prod.yml exec web python manage.py collectstatic --no-input --clear
-
-```
-```
-docker-compose -f docker-compose.prod.yml up
-
-```
-
 
 #### Preview of the documentation UI
 ![Screenshot from 2024-02-23 09-01-29](https://github.com/Kihara-Njoroge/Order-Management-System-API/assets/46190291/540940b1-7f8f-442e-8f18-0f2a658e4e96)
@@ -99,6 +88,7 @@ docker-compose -f docker-compose.prod.yml up
     ### Start Minikube cluster
     ```
     minikube start --driver=docker
+
 
     ```
 
@@ -131,6 +121,12 @@ docker-compose -f docker-compose.prod.yml up
 
     ```
 
+    ### Get the app url
+    ```
+    minikube service order-management-api-service --url
+
+    ```
+
 ## Implement Jenkins CI/CD Pipeline
   - Set up Jenkins and configure a CI/CD pipeline to automate Docker builds and Kubernetes deployments. The jenkins pipeline builds
     and pushes the builds to docker hub then deploys to github.
@@ -146,6 +142,8 @@ docker-compose -f docker-compose.prod.yml up
       4. Deploy to MinikubeGKE: Deploy the application to the GKE/Minikube Kubernetes cluster.
 
 
+
+# Extra or Optional
 ## Monitoring and Logging Setup.
 
   ## Overview
@@ -205,6 +203,7 @@ docker-compose -f docker-compose.prod.yml up
 
 ```
 minikube stop
+
 minikube delete
 
 ```
