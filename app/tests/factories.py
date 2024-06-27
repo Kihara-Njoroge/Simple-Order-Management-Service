@@ -7,26 +7,32 @@ from app.order_service.settings.base import AUTH_USER_MODEL
 faker = FakeFactory.create()
 
 
-# user factory
 @factory.django.mute_signals(post_save)
 class UserFactory(factory.django.DjangoModelFactory):
-    first_name = factory.LazyAttribute(lambda x: faker.first_name())
-    last_name = factory.LazyAttribute(lambda x: faker.last_name())
-    username = factory.LazyAttribute(lambda x: faker.first_name())
+    name = factory.Faker("name")
+    username = factory.Faker("user_name")
     phone_number = factory.LazyAttribute(lambda x: faker.phone_number())
-    email = factory.LazyAttribute(lambda x: faker.email())
-    password = "Password@1"
+    email = factory.Faker("email")
+    password = factory.LazyFunction(lambda: "password")
     is_active = True
     is_staff = False
 
     class Meta:
         model = AUTH_USER_MODEL
 
-    # controls whether to create a normal user or a super user
     @classmethod
     def _create(cls, model_class, *args, **kwargs):
         manager = cls._get_manager(model_class)
+        password = kwargs.pop("password", "password")  # Extract password
         if "is_superuser" in kwargs:
-            return manager.create_superuser(*args, **kwargs)
+            return manager.create_superuser(*args, password=password, **kwargs)
         else:
-            return manager.create_user(*args, **kwargs)
+            return manager.create_user(*args, password=password, **kwargs)
+
+    @classmethod
+    def _after_postgeneration(cls, instance, create, results=None):
+        """
+        Save again the instance if creating and at least one hook ran.
+        """
+        if create and results:
+            instance.save()

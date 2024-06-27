@@ -11,8 +11,7 @@ class UserViewSetTestCase(APITestCase):
             username="dummy",
             email="dummy@gmail.com",
             phone_number="+254799757242",
-            first_name="dummy",
-            last_name="user",
+            name="dummy",
             password="Passw0rd@1",
         )
         self.user_url = f"/api/v1/users/{self.user.id}/"
@@ -22,8 +21,7 @@ class UserViewSetTestCase(APITestCase):
             "username": "newuser",
             "email": "newuser@gmail.com",
             "phone_number": "+254799757243",
-            "first_name": "new",
-            "last_name": "user",
+            "name": "new",
             "password": "Passw0rd@1",
         }
         response = self.client.post("/api/v1/users/", data, format="json")
@@ -33,24 +31,22 @@ class UserViewSetTestCase(APITestCase):
         self.assertEqual(user.username, data["username"])
 
     def test_partial_update_user(self):
-        data = {"first_name": "Partial"}
+        data = {"name": "Partial"}
         response = self.client.patch(self.user_url, data, format="json")
         self.assertEqual(response.status_code, status.HTTP_200_OK)
-        self.assertEqual(response.data["user"]["first_name"], "Partial")
+        self.assertEqual(response.data["user"]["name"], "Partial")
 
     def test_update_user(self):
         data = {
             "username": self.user.username,
             "email": self.user.email,
             "phone_number": "+254712345679",
-            "first_name": "Updated",
-            "last_name": "User",
+            "name": "Updated",
         }
         print("DAATA", data)
         response = self.client.put(self.user_url, data, format="json")
         self.assertEqual(response.status_code, status.HTTP_200_OK)
-        self.assertEqual(response.data["user"]["first_name"], "Updated")
-        self.assertEqual(response.data["user"]["last_name"], "User")
+        self.assertEqual(response.data["user"]["name"], "Updated")
         self.assertEqual(response.data["user"]["phone_number"], "+254712345679")
 
     def test_delete_user(self):
