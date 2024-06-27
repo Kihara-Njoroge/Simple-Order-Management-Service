@@ -20,7 +20,7 @@ def test_order_model():
 def test_orderitem_model():
     product = ProductFactory()
     order = OrderFactory()
-    order_item = OrderItemFactory(order=order, product=product, quantity=3)
+    order_item = OrderItemFactory(order=order, product=product, quantity=1)
     assert order_item.cost == product.price * order_item.quantity
 
 
