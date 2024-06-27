@@ -14,6 +14,7 @@ from .serializers import (
 class ProductCategoryViewSet(viewsets.ModelViewSet):
     """
     Viewset for product categories.
+
     """
 
     queryset = Category.objects.all()
@@ -75,6 +76,26 @@ class ProductReadViewSet(viewsets.ReadOnlyModelViewSet):
     serializer_class = ProductReadSerializer
     filter_backends = [DjangoFilterBackend]
     filterset_class = ProductFilter
+
+    def list(self, request, *args, **kwargs):
+        queryset = self.filter_queryset(self.get_queryset())
+        page = self.paginate_queryset(queryset)
+        if page is not None:
+            serializer = self.get_serializer(page, many=True)
+            return self.get_paginated_response(serializer.data)
+        serializer = self.get_serializer(queryset, many=True)
+        return Response(serializer.data)
+
+    def retrieve(self, request, *args, **kwargs):
+        try:
+            instance = self.get_object()
+        except Product.DoesNotExist:
+            return Response(
+                {"detail": "Product not found."},
+                status=status.HTTP_404_NOT_FOUND,
+            )
+        serializer = self.get_serializer(instance)
+        return Response(serializer.data)
 
 
 class ProductWriteViewSet(viewsets.ModelViewSet):

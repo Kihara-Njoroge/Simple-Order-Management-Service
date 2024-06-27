@@ -7,7 +7,7 @@ router = DefaultRouter()
 
 router.register(r"categories", views.ProductCategoryViewSet, basename="categories")
 router.register(
-    r"customer-products", views.ProductReadViewSet, basename="customer-products"
+    r"customer-products", views.ProductReadViewSet, basename="customer-product"
 )
 router.register(r"admin-products", views.ProductWriteViewSet, basename="admin-products")
 
