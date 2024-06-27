@@ -79,7 +79,7 @@ docker compose up
 ```
 
 #### Preview of the documentation UI
-![Screenshot from 2024-02-23 09-01-29](https://github.com/Kihara-Njoroge/Order-Management-System-API/assets/46190291/540940b1-7f8f-442e-8f18-0f2a658e4e96)
+![Screenshot from 2024-06-27 15-56-02](https://github.com/Kihara-Njoroge/Simple-Order-Management-Service/assets/46190291/82f10971-bd64-4a1d-a627-30691c873016)
 
 
 ## Set Up Minikube Kubernetes Cluster
@@ -88,8 +88,6 @@ docker compose up
     ### Start Minikube cluster
     ```
     minikube start --driver=docker
-
-
     ```
 
     ### Set kubectl context to Minikube
