@@ -74,11 +74,11 @@ docker compose build
 docker compose up
 
 ```
+
  - Navigate to http://localhost/api/v1/docs to view the API endpoints documentation.
 
-```
 
-#### Preview of the documentation UI
+### Preview of the documentation UI
 ![Screenshot from 2024-06-27 15-56-02](https://github.com/Kihara-Njoroge/Simple-Order-Management-Service/assets/46190291/82f10971-bd64-4a1d-a627-30691c873016)
 
 
