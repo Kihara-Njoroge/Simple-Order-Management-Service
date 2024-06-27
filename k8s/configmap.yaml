@@ -1,0 +1,28 @@
+apiVersion: v1
+kind: ConfigMap
+metadata:
+  name: app-config
+data:
+  DEBUG: "True"
+  SECRET_KEY: "J$N7KOI0k+f5bEC}T(Iok;qL;aq@tELu%7H;r|![Oe@B0&/poGF}2j-iAh[Sa*"
+  DB_ENGINE: "django.db.backends.postgresql"
+  DB_NAME: "order_management_savannah"
+  DB_PORT: "5432"
+  DB_USER: "Kihara"
+  DB_HOST: "zereba-demo-db.postgres.database.azure.com"
+  PORT: "8000"
+  AFRICASTALKING_USERNAME: "sandbox"
+  AFRICASTALKING_API_KEY: "atsk_3e2b0950e71e6f36a51eca97da346f20126394ea6c29afb60d2ecaae1512783bbecae7bc"
+  OKTA_DOMAIN: "dev-38004610.okta.com"
+  OKTA_CLIENT_ID: "0oahxd6f00mKfYqes5d7"
+  OIDC_STORE_ACCESS_TOKEN: "True"
+  OIDC_STORE_ID_TOKEN: "True"
+  OIDC_STORE_REFRESH_TOKEN: "True"
+  OIDC_RP_SCOPES: "openid profile email offline_access"
+  SMTP_SERVER: "smtppro.zoho.com"
+  EMAIL_BACKEND: "django_smtp_ssl.SSLEmailBackend"
+  EMAIL_HOST: "smtp.zoho.com"
+  EMAIL_PORT: "465"
+  EMAIL_USE_TLS: "True"
+  EMAIL_HOST_USER: "info@zereba.co"
+  DEFAULT_FROM_EMAIL: "info@zereba.co"
