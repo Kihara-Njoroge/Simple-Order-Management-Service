@@ -5,3 +5,4 @@ per-file-ignores =
     app/order_service/settings/local.py: F403, F405, F401
     app/order_service/settings/production.py: F403, F405, F401
     docker-compose.yaml: EOL, W292
+    app/users/auth/custom_auth_backend.py: F841
