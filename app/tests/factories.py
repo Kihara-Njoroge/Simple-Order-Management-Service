@@ -1,8 +1,12 @@
 import factory
 from django.db.models.signals import post_save
+from django.utils.text import slugify
+from factory import fuzzy
 from faker import Factory as FakeFactory
 
+from app.inventory.models import Category, Product
 from app.order_service.settings.base import AUTH_USER_MODEL
+from app.orders.models import Order, OrderItem
 
 faker = FakeFactory.create()
 
@@ -11,7 +15,8 @@ faker = FakeFactory.create()
 class UserFactory(factory.django.DjangoModelFactory):
     name = factory.Faker("name")
     username = factory.Faker("user_name")
-    phone_number = factory.LazyAttribute(lambda x: faker.phone_number())
+    # phone_number = factory.LazyAttribute(lambda x: faker.phone_number())
+    phone_number = "+254712345678"
     email = factory.Faker("email")
     password = factory.LazyFunction(lambda: "password")
     is_active = True
@@ -36,3 +41,46 @@ class UserFactory(factory.django.DjangoModelFactory):
         """
         if create and results:
             instance.save()
+
+
+# products and categories factories
+class CategoryFactory(factory.django.DjangoModelFactory):
+    class Meta:
+        model = Category
+
+    name = factory.LazyAttribute(lambda x: faker.word())
+
+
+class ProductFactory(factory.django.DjangoModelFactory):
+    class Meta:
+        model = Product
+
+    name = factory.LazyAttribute(lambda x: faker.sentence(nb_words=3))
+    description = factory.LazyAttribute(lambda x: faker.paragraph())
+    price = factory.Faker("random_number", digits=2, fix_len=True)
+    category = factory.SubFactory(CategoryFactory)
+    image = factory.django.ImageField(color="red")
+    stock = factory.Faker("random_int", min=1, max=100)
+    created_at = factory.Faker("date_time_this_decade", tzinfo=None)
+    updated_at = factory.Faker("date_time_this_decade", tzinfo=None)
+
+    # Automatically generate unique slugs based on the name
+    @factory.lazy_attribute
+    def slug(self):
+        return slugify(self.name)
+
+
+class OrderFactory(factory.django.DjangoModelFactory):
+    class Meta:
+        model = Order
+
+    buyer = factory.SubFactory(UserFactory)
+
+
+class OrderItemFactory(factory.django.DjangoModelFactory):
+    class Meta:
+        model = OrderItem
+
+    order = factory.SubFactory(OrderFactory)
+    product = factory.SubFactory(ProductFactory)
+    quantity = fuzzy.FuzzyInteger(1, 10)
