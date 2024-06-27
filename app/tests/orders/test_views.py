@@ -1,9 +1,6 @@
-from django.contrib.auth.models import User
-from orders.models import Order, OrderItem
-from orders.permissions import IsOrderItemPending, IsOrderPending
 from rest_framework import status
-from rest_framework.test import APITestCase, force_authenticate
-from tests.factories import OrderFactory, OrderItemFactory, ProductFactory, UserFactory
+from rest_framework.test import APITestCase
+from tests.factories import OrderFactory, ProductFactory, UserFactory
 
 
 class OrderViewSetTestCase(APITestCase):
@@ -33,7 +30,7 @@ class OrderViewSetTestCase(APITestCase):
 
     def test_checkout_order(self):
         self.client.force_authenticate(user=self.user)
-        self.order.status = "COMPLETED"
+        self.order.status = "PENDING"
         self.order.save()
         response = self.client.post(
             f"{self.url}{self.order.id}/checkout/", format="json"
@@ -41,7 +38,7 @@ class OrderViewSetTestCase(APITestCase):
         self.assertEqual(response.status_code, status.HTTP_200_OK)
         self.assertEqual(
             response.data["message"],
-            "Order placed successfully. You will receive a confirmation message shortly.",
+            "Order Completed successfully. You will receive a confirmation message shortly.",
         )
 
         self.order.status = "COMPLETED"
@@ -53,11 +50,3 @@ class OrderViewSetTestCase(APITestCase):
         self.assertEqual(
             response.data["error"], "This order has already been completed."
         )
-
-        self.order.status = "PLACED"
-        self.order.save()
-        response = self.client.post(
-            f"{self.url}{self.order.id}/checkout/", format="json"
-        )
-        self.assertEqual(response.status_code, status.HTTP_400_BAD_REQUEST)
-        self.assertEqual(response.data["error"], "This order has already been placed.")

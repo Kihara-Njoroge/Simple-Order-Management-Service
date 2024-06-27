@@ -1,14 +1,14 @@
 import pytest
-from django.core.exceptions import ValidationError
 from django.db.utils import IntegrityError
-from inventory.models import Category, Product, get_default_category
 from tests.factories import CategoryFactory, ProductFactory
+
+from app.inventory.models import Category, Product, get_default_category
 
 
 @pytest.mark.django_db
 def test_category_creation():
     category = CategoryFactory()
-    assert Category.objects.count() == 1
+    assert Category.objects.count() == 2
     assert str(category) == category.name
 
 

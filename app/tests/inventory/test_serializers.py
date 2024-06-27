@@ -1,10 +1,11 @@
 import pytest
-from inventory.serializers import (
+from tests.factories import CategoryFactory, ProductFactory
+
+from app.inventory.serializers import (
     ProductCategoryReadSerializer,
     ProductReadSerializer,
     ProductWriteSerializer,
 )
-from tests.factories import CategoryFactory, ProductFactory
 
 
 @pytest.mark.django_db

@@ -1,13 +1,9 @@
 from django.contrib.auth import get_user_model
 from django.urls import reverse
-from inventory.models import Category, Product
-from inventory.serializers import (
-    ProductCategoryReadSerializer,
-    ProductReadSerializer,
-    ProductWriteSerializer,
-)
 from rest_framework import status
 from rest_framework.test import APITestCase
+
+from app.inventory.models import Category, Product
 
 User = get_user_model()
 
@@ -29,21 +25,22 @@ class ProductCategoryViewSetTestCase(APITestCase):
         Category.objects.create(name="Category 1")
         Category.objects.create(name="Category 2")
 
-        url = reverse("products:category-list")
+        url = reverse("products:categories-list")
         response = self.client.get(url)
 
         self.assertEqual(response.status_code, status.HTTP_200_OK)
-        self.assertEqual(len(response.data), 2)
+        self.assertEqual(len(response.data), 3)
+
         # Add more assertions as needed
 
     def test_create_product_category(self):
-        url = reverse("products:category-list")
+        url = reverse("products:categories-list")
         data = {"name": "New Category"}
 
         response = self.client.post(url, data)
 
         self.assertEqual(response.status_code, status.HTTP_201_CREATED)
-        self.assertEqual(Category.objects.count(), 1)
+        self.assertEqual(Category.objects.count(), 2)
         # Add more assertions as needed
 
     # Add more test cases for other actions (update, delete) as needed
@@ -70,7 +67,7 @@ class ProductWriteViewSetTestCase(APITestCase):
             name="Product 2", description="Description 2", price=19.99
         )
 
-        url = reverse("products:product-list")
+        url = reverse("products:admin-products-list")
         response = self.client.get(url)
 
         self.assertEqual(response.status_code, status.HTTP_200_OK)

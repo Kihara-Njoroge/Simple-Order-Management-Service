@@ -1,6 +1,4 @@
-import os
 from pathlib import Path
-
 from decouple import config
 
 DEBUG = config("DEBUG") == "True"
@@ -25,9 +23,9 @@ INSTALLED_APPS = [
     "drf_spectacular",
     "corsheaders",
     "rest_framework.authtoken",
-    "users",
-    "inventory",
-    "orders",
+    "app.users",
+    "app.inventory",
+    "app.orders",
     "mozilla_django_oidc",
 ]
 
@@ -44,13 +42,13 @@ MIDDLEWARE = [
 ]
 
 
-ROOT_URLCONF = "order_system.urls"
+ROOT_URLCONF = "app.order_service.urls"
 
 
 TEMPLATES = [
     {
         "BACKEND": "django.template.backends.django.DjangoTemplates",
-        "DIRS": ["app/order_system/docs/"],
+        "DIRS": ["app/order_service/"],
         "APP_DIRS": True,
         "OPTIONS": {
             "context_processors": [
@@ -63,10 +61,10 @@ TEMPLATES = [
     },
 ]
 
-WSGI_APPLICATION = "order_system.wsgi.application"
+WSGI_APPLICATION = "app.order_service.wsgi.application"
 
 AUTHENTICATION_BACKENDS = (
-    "users.auth.custom_auth_backend.CustomOIDCAuthenticationBackend",
+    "app.users.auth.custom_auth_backend.CustomOIDCAuthenticationBackend",
     "django.contrib.auth.backends.ModelBackend",
 )
 

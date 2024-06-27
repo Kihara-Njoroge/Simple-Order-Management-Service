@@ -1,11 +1,11 @@
 from decimal import Decimal
 
 from django.test import TestCase
-from inventory.models import Product
-from orders.models import Order, OrderItem
-from orders.serializers import OrderItemSerializer, OrderWriteSerializer
-from requests import Request
-from users.models import User
+
+from app.inventory.models import Product
+from app.orders.models import Order, OrderItem
+from app.orders.serializers import OrderItemSerializer
+from app.users.models import User
 
 
 class OrderItemSerializerTestCase(TestCase):
