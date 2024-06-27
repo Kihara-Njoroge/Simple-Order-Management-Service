@@ -61,10 +61,10 @@ class ProductWriteViewSetTestCase(APITestCase):
     def test_create_products(self):
         # Create some sample products
         Product.objects.create(
-            name="Product 1", description="Description 1", price=10.99
+            name="Product 1", description="Description 1", price=10.99, stock=10
         )
         Product.objects.create(
-            name="Product 2", description="Description 2", price=19.99
+            name="Product 2", description="Description 2", price=19.99, stock=10
         )
 
         url = reverse("products:admin-products-list")
@@ -72,3 +72,79 @@ class ProductWriteViewSetTestCase(APITestCase):
 
         self.assertEqual(response.status_code, status.HTTP_200_OK)
         self.assertEqual(len(response.data), 2)
+
+    def test_update_product_category(self):
+        category = Category.objects.create(name="CategoryToUpdate")
+        url = reverse("products:categories-detail", args=[category.pk])
+        data = {"name": "Updated Category Name"}
+
+        response = self.client.put(url, data)
+
+        self.assertEqual(response.status_code, status.HTTP_200_OK)
+        category.refresh_from_db()
+        self.assertEqual(category.name, "Updated Category Name")
+
+    def test_delete_product_category(self):
+        category = Category.objects.create(name="CategoryToDelete")
+        url = reverse("products:categories-detail", args=[category.pk])
+
+        response = self.client.delete(url)
+
+        self.assertEqual(response.status_code, status.HTTP_204_NO_CONTENT)
+        self.assertFalse(Category.objects.filter(pk=category.pk).exists())
+
+    def test_create_product_category_invalid_data(self):
+        url = reverse("products:categories-list")
+        invalid_data = {"name": ""}
+
+        response = self.client.post(url, invalid_data)
+
+        self.assertEqual(response.status_code, status.HTTP_400_BAD_REQUEST)
+        self.assertIn(
+            "name", response.data
+        )  # Ensure proper error handling for invalid data
+
+    def test_get_single_product_category(self):
+        category = Category.objects.create(name="Single Category")
+        url = reverse("products:categories-detail", args=[category.pk])
+
+        response = self.client.get(url)
+
+        self.assertEqual(response.status_code, status.HTTP_200_OK)
+        self.assertEqual(response.data["name"], "Single Category")
+
+    def test_get_nonexistent_product_category(self):
+        url = reverse("products:categories-detail", args=[999])  # Non-existent ID
+
+        response = self.client.get(url)
+
+        self.assertEqual(response.status_code, status.HTTP_404_NOT_FOUND)
+        self.assertIn("detail", response.data)
+
+    def test_create_product_invalid_data(self):
+        url = reverse("products:admin-products-list")
+        invalid_data = {"name": "", "price": -10.0}
+
+        response = self.client.post(url, invalid_data)
+
+        self.assertEqual(response.status_code, status.HTTP_400_BAD_REQUEST)
+        self.assertIn(
+            "name", response.data
+        )  # Ensure proper error handling for invalid data
+
+    def test_update_product_nonexistent(self):
+        url = reverse("products:admin-products-detail", args=[999])  # Non-existent ID
+        data = {"name": "Updated Product Name", "price": 60.0}
+
+        response = self.client.put(url, data)
+
+        self.assertEqual(response.status_code, status.HTTP_404_NOT_FOUND)
+        self.assertIn("detail", response.data)
+
+    def test_delete_product_nonexistent(self):
+        url = reverse("products:admin-products-detail", args=[999])  # Non-existent ID
+
+        response = self.client.delete(url)
+
+        self.assertEqual(response.status_code, status.HTTP_404_NOT_FOUND)
+        self.assertIn("detail", response.data)

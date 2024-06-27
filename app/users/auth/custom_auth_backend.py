@@ -1,13 +1,13 @@
 import logging
+import smtplib
+
 from django.conf import settings
 from django.core.exceptions import SuspiciousOperation
 from django.urls import reverse
+from django.utils import timezone
 from mozilla_django_oidc.auth import OIDCAuthenticationBackend
 from mozilla_django_oidc.utils import absolutify
 from rest_framework.authtoken.models import Token
-import smtplib
-from django.utils import timezone
-
 
 LOGGER = logging.getLogger(__name__)
 
@@ -98,19 +98,6 @@ class CustomOIDCAuthenticationBackend(OIDCAuthenticationBackend):
             server.quit()
         except Exception as e:
             LOGGER.error(f"Failed to send welcome email to {user.email}: {e}")
-
-    # def store_tokens(self, access_token, id_token, refresh_token):
-    #     """Store OIDC tokens."""
-    #     session = self.request.session
-
-    #     if self.get_settings("OIDC_STORE_ACCESS_TOKEN", True):
-    #         session["Token"] = access_token
-
-    #     if self.get_settings("OIDC_STORE_ID_TOKEN", False):
-    #         session["oidc_id_token"] = id_token
-
-    #     if self.get_settings("OIDC_STORE_REFRESH_TOKEN", True):
-    #         session["oefresh_token"] = refresh_token
 
     def store_tokens(self, user, access_token):
         """

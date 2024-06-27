@@ -60,7 +60,7 @@ class ProductFactory(factory.django.DjangoModelFactory):
     price = factory.Faker("random_number", digits=2, fix_len=True)
     category = factory.SubFactory(CategoryFactory)
     image = factory.django.ImageField(color="red")
-    stock = factory.Faker("random_int", min=1, max=100)
+    stock = factory.Faker("random_int", min=20, max=100)
     created_at = factory.Faker("date_time_this_decade", tzinfo=None)
     updated_at = factory.Faker("date_time_this_decade", tzinfo=None)
 
